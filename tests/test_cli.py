@@ -67,6 +67,15 @@ def test_get_existing_value(cli, dotenv_path):
     assert (result.exit_code, result.output) == (0, "b\n")
 
 
+def test_get_empty_string_value(cli, dotenv_path):
+    """Empty string values must not be treated as missing (truthiness trap)."""
+    dotenv_path.write_text("a=\n")
+
+    result = cli.invoke(dotenv_cli, ["--file", dotenv_path, "get", "a"])
+
+    assert (result.exit_code, result.output) == (0, "\n")
+
+
 def test_get_non_existent_value(cli, dotenv_path):
     result = cli.invoke(dotenv_cli, ["--file", dotenv_path, "get", "a"])
 
